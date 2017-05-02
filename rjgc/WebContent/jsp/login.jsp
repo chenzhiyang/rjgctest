@@ -9,7 +9,7 @@
 
 <body>
 <!--该jsp页面主要实登录的功能，form中还需要有两个隐藏的参数Productid和flag-->
-	<form id="loginform" action="../controller/LoginController.do" method="post">
+	<form id="loginform" action="loginController.do" method="post">
         <div>用户名<input type="text" name="Buyername" id="Buyername"></div><br>
         <div>密码<input type="password" name="BuyerPassword" id="BuyerPassword"></div><br>
         <input type="submit" value="登录">

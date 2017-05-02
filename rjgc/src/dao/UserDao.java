@@ -44,6 +44,44 @@ public class UserDao {
 		return i;
 	}
 	
+	public boolean RegCheck(UserModel reguser) throws SQLException{
+		boolean i=false;
+		conn=GetConnection.getConnection();
+		try{
+			sql="select * from Buyer where Buyername=?";
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,reguser.getName());
+			ResultSet rs=pstmt.executeQuery();
+			if(rs.next()){
+				i=true;
+			}else{
+				i=false;
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return i;
+	}
+	
+	public void insertnewuser(UserModel newuser) throws SQLException{
+		conn=GetConnection.getConnection();
+		String sql="insert into Buyer(Buyername,Buyertel,Buyeraddress,BuyerPassword) values(?,?,?,?)";
+		try{
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1,newuser.getName());
+			pstmt.setString(2,newuser.getTel());
+			pstmt.setString(3,newuser.getAddress());
+			pstmt.setString(4,newuser.getPassword());
+			pstmt.executeUpdate();
+			pstmt.close();
+			conn.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/*获取完整用户对象*/
 	public UserModel getUserByUsername(UserModel loginuser) throws SQLException {
 		try {
@@ -56,7 +94,7 @@ public class UserDao {
 			ResultSet rs=stmt.executeQuery(sql);
 			if (rs.next()) {
 				UserModel user = new UserModel();
-				user.setId(rs.getInt("Buyerid"));
+				//user.setId(rs.getInt("Buyerid"));
 				user.setName(rs.getString("Buyername"));
 				user.setTel(rs.getString("Buyertel"));
 				user.setAddress(rs.getString("Buyeraddress"));

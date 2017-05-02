@@ -1,42 +1,59 @@
 package service;
+import model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-import model.PurchaseHistoryModel;
-import model.ProductModel;
+import dao.*;
 
 public class ProductInfoService {
-	public ProductModel getProduct(int Productid){
-		ProductModel product = new ProductModel();
-		//将Productid写到product中，并调用getProductByProductid(ProductModel product)方法获取完整产品信息
-		return product;
+	public int addProductToProduct(ProductModel pModel){
+		java.sql.Connection conn =null;
+		ProductDao pDao=new ProductDao();
+		SupplierModel supplier=new SupplierModel();
+		SupplierDao sd=new SupplierDao();
+		String productName=pModel.getProductname();
+		String origin=pModel.getProductorigin();
+		String pdate=pModel.getProductdate();
+		String life=pModel.getProductlife();
+		float price=pModel.getProductprice();
+		String introduction=pModel.getProductintroduction();
+		int storedid=Integer.parseInt(pModel.getStoredid());
+		int stockNum=pModel.getStocknum();
+		int sid=Integer.parseInt(pModel.getSupplierid());
+		String image=pModel.getImage();
+		String sql="insert into product(Productname,Productorigin,Productdate,Productlife,Productintrodution,Productprice,Supplierid,Stocknum,Storedid,imagepath)"
+				+ "values(?,?,?,?,?,?,?,?,?,?)";
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,productName);
+			ps.setString(2, origin);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date date=sdf.parse(pdate);
+			java.util.Date lifedate=sdf.parse(life);
+			Timestamp tdate=new Timestamp(date.getTime());
+			Timestamp tlife=new Timestamp(lifedate.getTime());
+			ps.setTimestamp(3, tdate);
+			ps.setTimestamp(4, tlife);
+			ps.setString(5, introduction);
+			ps.setFloat(6, price);
+			ps.setInt(7, sid);
+			ps.setInt(8, stockNum);
+			ps.setString(9,storedid+"");
+			ps.setString(10, image);
+			ps.execute();
+			return 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
-	
-	public boolean AddProductToSCart(ProductModel product){
-		boolean i=false;
-		//将product对象加入session，成功则令i=true，否则i=false
-		return i;
-	}
-	
-	public List<ProductModel> getProductList(){
-		List<ProductModel> list = new ArrayList<ProductModel>();
-		//该方法暂时用不到，不用写
-		return list;
-	}
-	
-	public boolean saveHistory(List<ProductModel> list){
-		boolean i=false;
-		//获取用户信息
-		//根据list，生成购买的历史记录，并存入HistoryModel对象中
-		//调用HistoryDao类的saveToPurchaseHistory(HistoryModel history)方法，将购买历史写入数据库
-		return i;
-	}
-	
-	public boolean saveProduct(ProductModel product){
-		boolean i=false;
-		//先验证用户的输入是否合法，不合法，令i=false，并返回i。
-		//如果用户输入合法，则将product对象存入数据库，ProductDao的addProductToProduct(ProductModel product)方法
-		return i;
-	}
+
 }
